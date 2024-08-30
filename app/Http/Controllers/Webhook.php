@@ -23,10 +23,6 @@ class Webhook extends Controller
             'Content-Type' => 'application/json',
         ])->post($digiflazz->url . $validated['endpoint'], $validated['data']);
 
-        // Log request dan response
-        \Log::info('Request: ', $validated);
-        \Log::info('Response: ', $response->json() ?? []);
-
         // Return response ke website client
         return response()->json($response->json());
     }
