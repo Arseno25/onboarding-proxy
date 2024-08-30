@@ -6,7 +6,6 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "dotswan/filament-laravel-pulse": "^1.1",
         "filament/filament": "^3.2",
         "laravel/framework": "^11.9",
         "laravel/pulse": "^1.2",

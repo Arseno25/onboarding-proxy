@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Digiflazz;
+use App\Models\RequestLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -10,20 +11,24 @@ class Webhook extends Controller
 {
     public function handle(Request $request)
     {
-        $digiflazz = Digiflazz::all()->first();
+        $digiflazz = Digiflazz::where('provider', $request->provider)->firstOrFail();
 
-        // Validasi request dari website lain
         $validated = $request->validate([
             'endpoint' => 'required|string',
             'data' => 'required|array',
         ]);
 
-        // Kirim request ke Digiflazz
-        $response = Http::withHeaders([
-            'Content-Type' => 'application/json',
-        ])->post($digiflazz->url . $validated['endpoint'], $validated['data']);
+        RequestLog::create([
+            'endpoint' => $validated['endpoint'],
+            'data' => $validated['data'],
+            'meta' => [
+                'user_agent' => $request->header('User-Agent'),
+                'ip_address' => $request->ip(),
+            ],
+        ]);
 
-        // Return response ke website client
-        return response()->json($response->json());
+        $response = Http::post($digiflazz->url . $validated['endpoint'], $validated['data']);
+
+        return response()->json($response->json() ?? []);
     }
 }

@@ -26,6 +26,9 @@ class DigiSettingResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\TextInput::make('provider')
+                    ->label('Provider')
+                    ->required(),
                 Forms\Components\TextInput::make('url')
                     ->label('Digiflazz URL')
                     ->url()

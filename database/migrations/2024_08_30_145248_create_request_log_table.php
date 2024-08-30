@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('digiurl', function (Blueprint $table) {
+        Schema::create('request_log', function (Blueprint $table) {
             $table->id();
-            $table->string('provider');
-            $table->string('url');
+            $table->string('endpoint');
+            $table->json('data');
+            $table->json('meta');
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('digiurl');
+        Schema::dropIfExists('request_log');
     }
 };

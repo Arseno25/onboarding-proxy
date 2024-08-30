@@ -12,6 +12,7 @@ class Digiflazz extends Model
     protected $table = 'digiurl';
 
     protected $fillable = [
+        'provider',
         'url',
     ];
 }
