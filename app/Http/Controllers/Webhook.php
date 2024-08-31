@@ -13,6 +13,8 @@ class Webhook extends Controller
     {
         $digiflazz = Digiflazz::where('provider', $request->provider)->firstOrFail();
 
+        \Log::info($request->all());
+
         $validated = $request->validate([
             'endpoint' => 'required|string',
             'data' => 'required|array',

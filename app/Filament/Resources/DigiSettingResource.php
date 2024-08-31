@@ -19,8 +19,8 @@ class DigiSettingResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-bolt';
 
-    protected static ?string $label = 'Digiflazz URL';
-    protected static ?string $breadcrumb = 'Digiflazz url';
+    protected static ?string $label = 'Proxy Configuration';
+    protected static ?string $breadcrumb = 'Proxy Configuration';
 
     public static function form(Form $form): Form
     {

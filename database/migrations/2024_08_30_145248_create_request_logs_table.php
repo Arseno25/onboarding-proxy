@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('request_log', function (Blueprint $table) {
+        Schema::create('request_logs', function (Blueprint $table) {
             $table->id();
             $table->string('endpoint');
             $table->json('data');
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('request_log');
+        Schema::dropIfExists('request_logs');
     }
 };
