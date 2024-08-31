@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Digiflazz extends Model
+class Proxy extends Model
 {
     use HasFactory;
 
-    protected $table = 'digiurl';
+    protected $table = 'proxies';
 
     protected $fillable = [
         'provider',

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Digiflazz;
+use App\Models\Proxy;
 use App\Models\RequestLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -11,26 +11,34 @@ class Webhook extends Controller
 {
     public function handle(Request $request)
     {
-        $digiflazz = Digiflazz::where('provider', $request->provider)->firstOrFail();
+        try {
+            $proxy = Proxy::where('provider', $request->provider)->firstOrFail();
 
-        \Log::info($request->all());
+            $validated = $request->validate([
+                'endpoint' => 'required|string',
+                'data' => 'required|array',
+            ]);
 
-        $validated = $request->validate([
-            'endpoint' => 'required|string',
-            'data' => 'required|array',
-        ]);
+            RequestLog::create([
+                'endpoint' => $validated['endpoint'],
+                'data' => $validated['data'],
+                'meta' => [
+                    'user_agent' => $request->header('User-Agent'),
+                    'ip_address' => $request->ip(),
+                    'method' => $request->method(),
+                ],
+            ]);
 
-        RequestLog::create([
-            'endpoint' => $validated['endpoint'],
-            'data' => $validated['data'],
-            'meta' => [
-                'user_agent' => $request->header('User-Agent'),
-                'ip_address' => $request->ip(),
-            ],
-        ]);
+            $response = Http::post($proxy->url . $validated['endpoint'], $validated['data']);
 
-        $response = Http::post($digiflazz->url . $validated['endpoint'], $validated['data']);
+            return response()->json($response->json() ?? []);
+        } catch (\Exception $e) {
+            \Log::error('Error handling webhook: ' . $e->getMessage(), [
+                'request' => $request->all(),
+                'exception' => $e,
+            ]);
 
-        return response()->json($response->json() ?? []);
+            return response()->json(['error' => 'An error occurred while processing the request.'], 500);
+        }
     }
 }

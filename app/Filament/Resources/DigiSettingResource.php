@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\DigiSettingResource\Pages;
 use App\Filament\Resources\DigiSettingResource\RelationManagers;
-use App\Models\Digiflazz;
+use App\Models\Proxy;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class DigiSettingResource extends Resource
 {
-    protected static ?string $model = Digiflazz::class;
+    protected static ?string $model = Proxy::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-bolt';
 
@@ -30,10 +30,10 @@ class DigiSettingResource extends Resource
                     ->label('Provider')
                     ->required(),
                 Forms\Components\TextInput::make('url')
-                    ->label('Digiflazz URL')
+                    ->label('Proxy URL')
                     ->url()
                     ->required()
-                ->helperText('Masukkan URL Host Digiflazz yang akan digunakan untuk mengirim request'),
+                    ->helperText('Masukkan URL Host Proxy yang akan digunakan untuk mengirim request'),
             ]);
     }
 
@@ -41,8 +41,10 @@ class DigiSettingResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('provider')
+                    ->label('Provider'),
                 Tables\Columns\TextColumn::make('url')
-                    ->label('Digiflazz URL'),
+                    ->label('Proxy URL'),
             ])
             ->filters([
                 //
