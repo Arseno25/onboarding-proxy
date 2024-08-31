@@ -18,7 +18,7 @@ class RequestLogResource extends Resource
 {
     protected static ?string $model = RequestLog::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-arrows-right-left';
 
     public static function form(Form $form): Form
     {

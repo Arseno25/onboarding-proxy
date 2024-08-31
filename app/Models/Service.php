@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Proxy extends Model
+class Service extends Model
 {
     use HasFactory;
 
-    protected $table = 'proxies';
+    protected $table = 'services';
 
     protected $fillable = [
         'provider',

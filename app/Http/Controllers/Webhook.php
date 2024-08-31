@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Proxy;
+use App\Models\Service;
 use App\Models\RequestLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -12,7 +12,7 @@ class Webhook extends Controller
     public function handle(Request $request)
     {
         try {
-            $proxy = Proxy::where('provider', $request->provider)->firstOrFail();
+            $proxy = Service::where('provider', $request->provider)->firstOrFail();
 
             $validated = $request->validate([
                 'endpoint' => 'required|string',

@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\DigiSettingResource\Pages;
-use App\Filament\Resources\DigiSettingResource\RelationManagers;
-use App\Models\Proxy;
+use App\Filament\Resources\ServiceSettingResource\Pages;
+use App\Filament\Resources\ServiceSettingResource\RelationManagers;
+use App\Models\Service;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,14 +13,14 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class DigiSettingResource extends Resource
+class ServiceSettingResource extends Resource
 {
-    protected static ?string $model = Proxy::class;
+    protected static ?string $model = Service::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-bolt';
 
-    protected static ?string $label = 'Proxy Configuration';
-    protected static ?string $breadcrumb = 'Proxy Configuration';
+    protected static ?string $label = 'Service Configuration';
+    protected static ?string $breadcrumb = 'Service Configuration';
 
     public static function form(Form $form): Form
     {
@@ -30,10 +30,10 @@ class DigiSettingResource extends Resource
                     ->label('Provider')
                     ->required(),
                 Forms\Components\TextInput::make('url')
-                    ->label('Proxy URL')
+                    ->label('Service API URL')
                     ->url()
                     ->required()
-                    ->helperText('Masukkan URL Host Proxy yang akan digunakan untuk mengirim request'),
+                    ->helperText('Masukkan URL API service yang akan digunakan.'),
             ]);
     }
 
@@ -44,7 +44,7 @@ class DigiSettingResource extends Resource
                 Tables\Columns\TextColumn::make('provider')
                     ->label('Provider'),
                 Tables\Columns\TextColumn::make('url')
-                    ->label('Proxy URL'),
+                    ->label('Service URL'),
             ])
             ->filters([
                 //
@@ -69,9 +69,9 @@ class DigiSettingResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListDigiSettings::route('/'),
-            'create' => Pages\CreateDigiSetting::route('/create'),
-            'edit' => Pages\EditDigiSetting::route('/{record}/edit'),
+            'index' => Pages\ListServiceSettings::route('/'),
+            'create' => Pages\CreateServiceSetting::route('/create'),
+            'edit' => Pages\EditServiceSetting::route('/{record}/edit'),
         ];
     }
 }
