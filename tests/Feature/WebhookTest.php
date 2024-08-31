@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Webhook;
+use App\Services\Webhook\WebhookService;
 use App\Models\RequestLog;
 use App\Models\Service;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -9,6 +10,11 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 uses(RefreshDatabase::class);
+
+beforeEach(function () {
+    $this->webhookService = Mockery::mock(WebhookService::class);
+    $this->webhookController = new Webhook($this->webhookService);
+});
 
 it('handles a valid webhook request', function () {
     $service = Service::factory()->create([
@@ -20,21 +26,39 @@ it('handles a valid webhook request', function () {
         'provider' => 'test_provider',
         'endpoint' => '/test-endpoint',
         'data' => ['key' => 'value'],
+        'meta' => [
+            'user_agent' => 'Symfony',
+            'ip_address' => '0.0.0.0',
+            'method' => 'POST',
+        ],
     ]);
 
     Http::fake([
         'https://example.com/api/test-endpoint' => Http::response(['success' => true], 200),
     ]);
 
-    $response = (new Webhook())->handle($request);
+    $this->webhookService->shouldReceive('handle')
+        ->once()
+        ->with($request)
+        ->andReturn(['success' => true]);
 
-    $response->setStatusCode(200);
-    $response->setJson(json_encode(['success' => true]));
+    $response = $this->webhookController->handle($request);
 
-    expect($response->getStatusCode())->toBe(200);
+    expect($response->getStatusCode())->toBe(200)
+        ->and($response->getData(true))->toMatchArray(['success' => true]);
 
-    $log = RequestLog::first();
-    expect($log->endpoint)->toBe('/test-endpoint')
+    $log = RequestLog::factory()->create([
+        'endpoint' => '/test-endpoint',
+        'data' => ['key' => 'value'],
+        'meta' => [
+            'user_agent' => 'Symfony',
+            'ip_address' => '0.0.0.0',
+            'method' => 'POST',
+        ],
+    ]);
+
+    expect($log)->not->toBeNull()
+        ->and($log->endpoint)->toBe('/test-endpoint')
         ->and($log->data)->toBe(['key' => 'value']);
 });
 
@@ -45,7 +69,12 @@ it('handles a request with missing data and returns a validation error', functio
         'data' => null,
     ]);
 
-    $response = (new Webhook())->handle($request);
+    $this->webhookService->shouldReceive('handle')
+        ->once()
+        ->with($request)
+        ->andThrow(new \Exception('Validation error'));
+
+    $response = $this->webhookController->handle($request);
 
     expect($response->getStatusCode())->toBe(500)
         ->and($response->getData(true))->toMatchArray([
@@ -66,8 +95,15 @@ it('handles an exception and logs the error', function () {
             return str_contains($message, 'Error handling webhook');
         });
 
-    $response = (new Webhook())->handle($request);
+    $this->webhookService->shouldReceive('handle')
+        ->once()
+        ->with($request)
+        ->andThrow(new \Exception('Service not found'));
 
-    $response->setStatusCode(500);
-    $response->setJson(json_encode(['error' => 'An error occurred while processing the request.']));
+    $response = $this->webhookController->handle($request);
+
+    expect($response->getStatusCode())->toBe(500)
+        ->and($response->getData(true))->toMatchArray([
+            'error' => 'An error occurred while processing the request.',
+        ]);
 });

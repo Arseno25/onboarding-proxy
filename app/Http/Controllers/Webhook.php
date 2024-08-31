@@ -2,36 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Service;
-use App\Models\RequestLog;
+use App\Services\Webhook\WebhookService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 
 class Webhook extends Controller
 {
+    protected WebhookService $webhookService;
+
+    public function __construct(WebhookService $webhookService)
+    {
+        $this->webhookService = $webhookService;
+    }
+
     public function handle(Request $request)
     {
         try {
-            $proxy = Service::where('provider', $request->provider)->firstOrFail();
-
-            $validated = $request->validate([
-                'endpoint' => 'required|string',
-                'data' => 'required|array',
-            ]);
-
-            RequestLog::create([
-                'endpoint' => $validated['endpoint'],
-                'data' => $validated['data'],
-                'meta' => [
-                    'user_agent' => $request->header('User-Agent'),
-                    'ip_address' => $request->ip(),
-                    'method' => $request->method(),
-                ],
-            ]);
-
-            $response = Http::post($proxy->url . $validated['endpoint'], $validated['data']);
-
-            return response()->json($response->json() ?? []);
+            $response = $this->webhookService->handle($request);
+            return response()->json($response);
         } catch (\Exception $e) {
             \Log::error('Error handling webhook: ' . $e->getMessage(), [
                 'request' => $request->all(),
