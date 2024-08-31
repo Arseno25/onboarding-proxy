@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class ServiceSettingResource extends Resource
 {
     protected static ?string $model = Service::class;
-
+    protected static ?int $navigationSort = -2;
     protected static ?string $navigationIcon = 'heroicon-o-bolt';
 
     protected static ?string $label = 'Service Configuration';

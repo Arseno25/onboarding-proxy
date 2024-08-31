@@ -3,9 +3,12 @@
 use App\Http\Controllers\Webhook;
 use App\Models\RequestLog;
 use App\Models\Service;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+
+uses(RefreshDatabase::class);
 
 it('handles a valid webhook request', function () {
     $service = Service::factory()->create([
