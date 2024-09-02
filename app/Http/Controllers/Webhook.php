@@ -17,15 +17,16 @@ class Webhook extends Controller
     public function handle(Request $request)
     {
         try {
-            $response = $this->webhookService->handle($request);
-            return response()->json($response);
+            $result = $this->webhookService->handle($request);
+            return response()->json($result, 200);
         } catch (\Exception $e) {
-            \Log::error('Error handling webhook: ' . $e->getMessage(), [
+            \Log::error('Error handling webhook', [
                 'request' => $request->all(),
-                'exception' => $e,
+                'exception' => $e->getMessage(),
             ]);
-
-            return response()->json(['error' => 'An error occurred while processing the request.'], 500);
+            return response()->json([
+                'error' => 'An error occurred while processing the request.',
+            ], 500);
         }
     }
 }

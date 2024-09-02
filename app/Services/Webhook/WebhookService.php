@@ -25,6 +25,7 @@ class WebhookService
                 'user_agent' => $request->header('User-Agent'),
                 'ip_address' => $request->ip(),
                 'method' => $request->method(),
+                'host' => $request->header('Referer') ?? $request->header('Origin') ?? 'unknown',
             ],
         ]);
 
