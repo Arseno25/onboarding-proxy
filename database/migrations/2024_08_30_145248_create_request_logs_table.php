@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('request_logs', function (Blueprint $table) {
             $table->id();
+            $table->string('provider');
             $table->string('endpoint');
             $table->json('data');
             $table->json('meta');

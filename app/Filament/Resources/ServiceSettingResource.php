@@ -28,12 +28,13 @@ class ServiceSettingResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('provider')
                     ->label('Provider')
-                    ->required(),
+                    ->required()
+                    ->helperText('Masukan nama penyedia layanan.Contoh: Digiflazz'),
                 Forms\Components\TextInput::make('url')
                     ->label('Service API URL')
                     ->url()
                     ->required()
-                    ->helperText('Masukkan URL API service yang akan digunakan.'),
+                    ->helperText('Masukan URL API dari provider yang digunakan. Contoh: https://api.example.com'),
             ]);
     }
 

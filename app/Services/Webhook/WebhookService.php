@@ -19,6 +19,7 @@ class WebhookService
         ]);
 
         RequestLog::create([
+            'provider' => $request->provider,
             'endpoint' => $validated['endpoint'],
             'data' => $validated['data'],
             'meta' => [

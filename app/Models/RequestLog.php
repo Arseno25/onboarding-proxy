@@ -9,8 +9,7 @@ class RequestLog extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['endpoint', 'data', 'meta'];
-
+    protected $fillable = ['provider','endpoint', 'data', 'meta'];
     protected $casts = [
         'data' => 'array',
         'meta' => 'array',
